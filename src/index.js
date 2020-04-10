@@ -14,16 +14,40 @@ class App extends React.Component {
     };
   }
 
+  deleteItem = id => {
+    fetch(`https://tas-flask-todo-api.herokuapp.com/todo/${id}`, {
+      method: "DELETE",
+    })
+    .then (
+      this.setState({
+        todos: this.state.todos.filter(item => {
+          return item.id !== id
+        })
+      })
+    )
+  };
+
   renderTodos = () => {
     return this.state.todos.map(item => {
-      return <TodoItem key={item.id} item={item}/>;
+      return <TodoItem key={item.id} item={item} deleteItem={this.deleteItem}/>;
     });
   };
 
   addToDo = e => {
     e.preventDefault();
-    console.log("ToDo successfully added, thank you.")
-  };
+    axios
+      .post("https://tas-flask-todo-api.herokuapp.com/todo", {
+        title: this.state.todo,
+        done: false,
+      })
+      .then((res) => {
+        this.setState({
+          todos: [res.data, ...this.state.todos],
+          todo: "",
+        });
+      })
+      .catch((err) => console.log("add todo Error : ", err))
+      }
 
   handleChange = e => {
     this.setState({
@@ -48,7 +72,7 @@ class App extends React.Component {
     return (
       <div className="app">
         <h1>ToDo List</h1>
-        <form className="add-todo" onSubmit={this.addTodo}>
+        <form className="add-todo" onSubmit={this.addToDo}>
           <input
             type="text"
             placeholder="Add Todo"

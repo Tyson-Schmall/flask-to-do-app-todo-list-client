@@ -33,7 +33,7 @@ export default class TodoItem extends Component {
                     onClick={this.toggleDone}
                 />
                 <p className={this.state.done ? "done" : null}>{this.props.item.title}</p>
-                <button>X</button>
+                <button onClick={() => this.props.deleteItem(this.props.item.id)}>X</button>
             </div>
         );
     }
